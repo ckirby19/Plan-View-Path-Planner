@@ -10,44 +10,9 @@ body{
 #canvas1{
     width: 100%;
     height: 100vh;
-    background: var(--other-bg-color);
+    background: var(--main-bg-color);
     top: 0;
     left: 0;
-}
-
-/* For slider */
-.slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 25px; /* Specified height */
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-}
-  
-/* Mouse-over effects */
-.slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-}
-  
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-}
-  
-.slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #04AA6D; /* Green background */
-    cursor: pointer; /* Cursor on hover */
 }
 
 #sidebar {
@@ -79,12 +44,35 @@ body{
 #sidebar .drawing-tool:hover{
     background: var(--other-bg-color)
 } 
-
+/* 
 .columns.content-area{border:1px solid #111;padding:0}
 .columns.sidebar{border:1px solid #111;padding:0}
 .columns.left-nav{padding:0}
-.icon-bar.vertical.six-up{width:100%}
+.icon-bar.vertical.six-up{width:100%} */
 
+.sidebar{
+    background: rgb(5, 68, 104);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 225px;
+    height: 100%;
+    padding: 20px 0;
+    transition: all 0.5s ease;
+}
+.sidebar ul li a{
+    display: block;
+    padding: 13px 30px;
+    border-bottom: 1px solid #10558d;
+    color: rgb(241, 237, 237);
+    font-size: 16px;
+    position: relative;
+}
+.sidebar i{
+    color: #dee4ec;
+    width: 30px;
+    display: inline-block;
+}
 /* The popup form - hidden by default */
 .form-popup {
     display: none;
