@@ -1,0 +1,25 @@
+{
+  "name": "robotic-path-planner",
+  "version": "1.0.0",
+  "description": "An environment for experimenting with different path planning algorithms in a 2D environment",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ckirby19/Robotic-Path-Planner.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ckirby19/Robotic-Path-Planner/issues"
+  },
+  "homepage": "https://github.com/ckirby19/Robotic-Path-Planner#readme",
+  "dependencies": {
+    "fabric": "^5.2.4"
+  },
+  "devDependencies": {
+    "webpack": "^5.74.0"
+  }
+}

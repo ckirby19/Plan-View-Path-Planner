@@ -75,14 +75,14 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """Register user"""
-    #Get user input for name
+    # Get user input for name
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        usrname = request.form.get("username")
+        username = request.form.get("username")
         passwd = request.form.get("password")
         confirm = request.form.get("confirmation")
         # Ensure username was submitted
-        if not usrname:
+        if not username:
             return apology("must provide username", 403)
 
         # Ensure password was submitted
@@ -92,7 +92,7 @@ def register():
         if passwd != confirm:
             return apology("Passwords do not match",403)
         # Query database for username to ensure user does not exist
-        cursor.execute("SELECT * FROM userlogin WHERE username = :username", {"username":usrname})
+        cursor.execute("SELECT * FROM userlogin WHERE username = :username", {"username":username})
         
         if cursor.fetchone():
             return apology("User already exists", 403)
@@ -100,12 +100,13 @@ def register():
         #If we get here, we can add to database
         try:
             cursor.execute("begin")
-            cursor.execute("INSERT INTO userlogin (username, hash) VALUES(?, ?)", (usrname, generate_password_hash(passwd)))
+            cursor.execute("INSERT INTO userlogin (username, hash) VALUES(?, ?)", (username, generate_password_hash(passwd)))
             cursor.execute("commit")
         except db.Error:
             print("Failed SQL update/insert!")
             cursor.execute("rollback")
-        cursor.execute("SELECT * FROM userlogin WHERE username = :username", {"username":usrname})
+
+        cursor.execute("SELECT * FROM userlogin WHERE username = :username", {"username":username})
         newRow = cursor.fetchone()
         print("HELLO",newRow["id"],file=sys.stderr)
         session["user_id"] = newRow["id"]

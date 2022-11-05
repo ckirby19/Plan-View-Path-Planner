@@ -9,24 +9,13 @@
         <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
         <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
         <script src="https://kit.fontawesome.com/3d4c3199be.js" crossorigin="anonymous"></script>
-
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 
         <link href="/static/css/styles.css" rel="stylesheet">
         <title>Path Planner: {% block title %}{% endblock %}</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <ul class="title-area">
-              <li class="name">
-                <h1><a href="#">LOGO</a></h1>
-              </li>
-              <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-            </ul>
-        
-            <section class="top-bar-section">
-        
-              <!-- Right Nav Section -->
-              <ul class="right">
+        <!-- <ul class="right">
                 {% if session["user_id"] %}
                 <li><a href="/logout"><i class="fa fa-diamond"></i>Logout</a></li>
                 
@@ -50,50 +39,82 @@
                 {% endif %}
               </ul>
 
-              <!-- Left Nav Section -->
               <ul class="left">
                 <li><a href="#"><i class="fa fa-database"></i> Algorithm Settings</a></li>
                 <li><a href="#" onclick="reset()"><i class="fa fa-list-ol"></i> Reset</a></li>
               </ul>
             </section>
           </nav>
-        
-          <!-- Left Nav Sidebar -->
-        
+         -->
         <div class="sidebar">
-          <div class="icon-bar vertical six-up">
-            <a class="item active" onclick="pencil()">
-                <i class="fa-solid fa-pen"></i>
-                <label>Pen</label>
-            </a>
-            <a class="item">
-                <i class="fa-solid fa-arrow-pointer"></i>
-                <label>Select</label>
-            </a>
-            <a class="item" onclick="rectangle()">
-                <i class="fa-regular fa-square"></i>
-                <label>Shape</label>
-            </a>
-            <a class="item">
-                <i class="fa-regular fa-eraser"></i>
-                <label>Erase</label>
-            </a>
-            <a class="item">
-                <i class="fa-regular fa-trash"></i>
-                <label>Delete</label>
-            </a>
-            <a class="item">
-                <i class="fa-regular fa-upload"></i>
-                <label>Load SVG</label>
-            </a>
-          </div>
+            <div class="logo_content">
+                <div class = "logo">
+                    <img src="../static/images/mylogo-centred.jpg" alt="A handshake between a human and robot hand, forming the shape of a heart"></img>
+                </div>
+            </div>
+            
+            <ul class="canvas_functions">
+                <li onclick="move()" class="active">
+                    <a>
+                        <i class="fa-solid fa-arrow-pointer"></i>
+                        <span class="links_name">Select</span>
+                    </a>
+                </li>
+                <li onclick="pencil()">
+                    <a>
+                        <i class="fa-solid fa-pen"></i>
+                        <span class="links_name">Pen</span>
+                    </a>
+                </li>
+                <li onclick="line()">
+                    <a>
+                        <i class="fa-solid fa-bezier-curve"></i>
+                        <span class="links_name">Line</span>
+                    </a>
+                </li>
+                <li onclick="rectangle()">
+                    <a>
+                        <i class="fa-regular fa-square"></i>
+                        <span class="links_name">Rectangle</span>
+                    </a>
+                </li>
+                <li onclick="erase()">
+                    <a >
+                        <i class="fa-solid fa-eraser"></i>
+                        <span class="links_name">Eraser</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="user_functions">
+                {% if session["user_id"] %}
+                <li onclick="load()">
+                    <a>
+                        <i class="fa-solid fa-file-import"></i>
+                        <span class="links_name">Load</span>
+                    </a>
+                </li>
+                <li onclick="save()">
+                    <a>
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span class="links_name">Save</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="modal-popup" onclick="openForm()">
+                    <a>
+                    <!-- <a href="#myModal" class="trigger-btn" data-toggle="modal"> -->
+                        <i class="fa-solid fa-user"></i>
+                        <span class="links_name">Login</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
         </div>
         <!-- Now fill the rest of main with this -->
-        <main>
-            <div class="medium-8 columns content-area">
-                <canvas onload="pencil()" id="canvas1"></canvas>
-            </div>
-        </main>
+        <div class="canvas_container">
+            <canvas onload="move()" id="canvas1"></canvas>
+        </div>
         
 
         <!-- {% if get_flashed_messages() %}
@@ -103,54 +124,40 @@
                 </div>
             </header>
         {% endif %} -->
-
-        <div class="form-popup" id="myForm">
-            <div class="popup-container">
-                <div class="popup-header">
-                <div id="popup-close-button" onclick="closeForm()"></div>
-                <ul>
-                    <li><a href="#" id="sign-in">Sign In</a></li>
-                    <li><a href="#" id="register">Register</a></li>
-                </ul>
-                </div><!--.popup-header-->
-                <div class="popup-content">
+        <div id="myModal" class="modal fade">
+            <div class="modal-dialog modal-login">
+                <div class="modal-content">
                     <form action="/login" method="post">
-                        <div class="mb-3">
-                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
+                        <div class="modal-header">				
+                            <h4 class="modal-title">Login</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="closeForm()">&times;</button>
                         </div>
-                        <div class="mb-3">
-                            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+                        <div class="modal-body">				
+                            <div class="form-group">
+                                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="login_username" name="login_username" placeholder="Username" type="text">
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control mx-auto w-auto" id="login_password" name="login_password" placeholder="Password" type="password">
+                            </div>
                         </div>
-                        <p class="check-mark">
-                            <input type="checkbox" id="remember-me">
-                            <label for="remember-me">Remember me</label>
-                        </p>
-                        <button class="btn btn-primary" type="submit">Log In</button>
+                        <div class="modal-footer justify-content-between">
+                            <label class="form-check-label"><input type="checkbox"> Remember me</label>
+                            <button class="btn btn-primary" type="submit">Log In</button>
+                        </div>
                     </form>
-                    <form action="/register" method="post">
-                        <div class="mb-3">
-                            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">
-                        </div>
-                        <div class="mb-3">
-                            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
-                        </div>
-                        <div class="mb-3">
-                            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Re-type Password" type="password">
-                        </div>
-                        <p class="check-mark">
-                            <input type="checkbox" id="accept-terms">
-                            <label for="accept-terms">I agree to the <a href="#">Terms</a></label>
-                        </p>
-                        <button class="btn btn-primary" type="submit">Create Account</button>
-                    </form>
-                </div><!--.popup-content-->
+                </div>
             </div>
-          </div><!--.form-popup-->
-
-        <footer class="mb-5 small text-center text-muted">
-            Made by Conor Kirby
-        </footer>
+        </div>     
+        <!-- <script type="importmap">
+            {
+                "imports":{
+                    "fabric":"../../node_modules/fabric/dist/fabric.js"
+                }
+            }
+        </script> -->
+        <script src = "../static/js/fabric.min.js"></script>
         <script src = "../static/js/canvas2.js"></script>
+        <script src = "../static/js/sidenav.js"></script>
     </body>
 
 </html>

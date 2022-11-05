@@ -4,115 +4,176 @@ body{
     --third-bg-color: gray;
     --header-margin: 10%;
     --header-margin-min: 150px;
+    --sidenav-width: 160px;
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
     overflow: hidden;
 }
 
-#canvas1{
-    width: 100%;
-    height: 100vh;
-    background: var(--main-bg-color);
-    top: 0;
-    left: 0;
-}
-
-#sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    min-height: 100vh;
-}
-
-.drawing-tool{
-    font-weight: bold;
-    color: var(--other-bg-color);
-    opacity: 0.65;
-    text-align: center;
-    justify-content: center;
-    height:55px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.drawing-tool.active, .drawing-tool.always-active{
-    opacity: 1;
-}
-
-
-#sidebar .drawing-tool:hover{
-    opacity: 1;
-    color: var(--main-bg-color)
-} 
-
-#sidebar .drawing-tool:hover{
-    background: var(--other-bg-color)
-} 
-/* 
-.columns.content-area{border:1px solid #111;padding:0}
-.columns.sidebar{border:1px solid #111;padding:0}
-.columns.left-nav{padding:0}
-.icon-bar.vertical.six-up{width:100%} */
 
 .sidebar{
-    background: rgb(5, 68, 104);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 225px;
-    height: 100%;
-    padding: 20px 0;
+    position:fixed;
+    height:100%;
+    top:0;
+    left:0;
+    width: var(--sidenav-width);
+    background-color: var(--other-bg-color);
+    padding: 6px 14px;
     transition: all 0.5s ease;
 }
-.sidebar ul li a{
-    display: block;
-    padding: 13px 30px;
-    border-bottom: 1px solid #10558d;
-    color: rgb(241, 237, 237);
-    font-size: 16px;
-    position: relative;
-}
-.sidebar i{
-    color: #dee4ec;
-    width: 30px;
-    display: inline-block;
-}
-/* The popup form - hidden by default */
-.form-popup {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    right: 15px;
-    border: 3px solid #f1f1f1;
-    z-index: 9;
-}
-  
-/* Add styles to the form container */
-.form-container {
-    max-width: 300px;
-    padding: 10px;
-    background-color: white;
+
+/* Logo */
+
+.logo_content{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
-/* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
+
+.logo img{
+    filter: invert(100%);
+    height: 75px;
+}
+
+/* Sidebar Content */
+
+.sidebar ul{
+    margin-top: 20px;
+    padding-left: 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar li{
+    color: #fff;
+    display: flex;
+    align-items: center;
     width: 100%;
-    padding: 15px;
-    margin: 5px 0 22px 0;
-    border: none;
-    background: #f1f1f1;
-}
-
-/* When the inputs get focus, do something */
-.form-container input[type=text]:focus, .form-container input[type=password]:focus {
-background-color: #ddd;
-outline: none;
-}
-
-/* Set a style for the submit/login button */
-/* .form-container input {
-    background-color: #04AA6D;
-    color: white;
-    padding: 16px 20px;
-    border: none;
+    padding: 2px;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    border-radius: 8px;
     cursor: pointer;
+    list-style: none;
+}
+/* .user_functions li{
+    margin-top: auto;
+} */
+
+.sidebar li:hover{
+    background: grey;
+    text-decoration: none;
+}
+
+.sidebar li.active{
+    background: white;
+    text-decoration: none;
+}
+.sidebar li.active .links_name, .sidebar li.active i{
+    color: black;
+}
+    
+.sidebar a i{
+    height: 50px;
+    min-width: 50px;
+    border-radius: 8px;
+    line-height: 50px;
+    /* text-align: center; */
+}
+
+
+/* Main content */
+
+.canvas_container{
+    position: absolute;
     width: 100%;
-    margin-bottom:10px;
-    opacity: 0.8;
+    height: 100vh;
+    top: 0;
+    left: var(--sidenav-width);
+    background: var(--main-bg-color);
+}
+
+
+/* The popup form - hidden by default */
+.modal {
+    display: none;
+}
+
+.modal.show {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+}
+
+.modal-login {
+	width: 320px;
+}
+.modal-login .modal-content {
+	border-radius: 1px;
+	border: none;
+}
+.modal-login .modal-header {
+	position: relative;
+	justify-content: center;
+	background: #f2f2f2;
+}
+.modal-login .modal-body {
+	padding: 30px;
+}
+.modal-login .modal-footer {
+	background: #f2f2f2;
+}
+.modal-login h4 {
+	text-align: center;
+	font-size: 26px;
+}
+.modal-login label {
+	font-weight: normal;
+	font-size: 13px;
+}
+.modal-login .form-control, .modal-login .btn {
+	min-height: 38px;
+	border-radius: 2px; 
+}
+.modal-login .hint-text {
+	text-align: center;
+}
+.modal-login .close {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+.modal-login .checkbox-inline {
+	margin-top: 12px;
+}
+.modal-login input[type="checkbox"] {
+	position: relative;
+	top: 1px;
+}
+.modal-login .btn {
+	min-width: 100px;
+	background: #3498db;
+	border: none;
+	line-height: normal;
+}
+.modal-login .btn:hover, .modal-login .btn:focus {
+	background: #248bd0;
+}
+.modal-login .hint-text a {
+	color: #999;
+}
+
+.form-group{
+    padding: 5px;
+}
+/* .trigger-btn {
+	display: inline-block;
+	margin: 100px auto;
 } */
