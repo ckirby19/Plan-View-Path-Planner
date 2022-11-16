@@ -84,9 +84,14 @@
                         <span class="links_name">Eraser</span>
                     </a>
                 </li>
+                <li onclick="simulate()">
+                    <a>
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="links_name">Simulate</span>
+                    </a>
+                </li>
             </ul>
             <ul class="user_functions">
-                {% if session["user_id"] %}
                 <li onclick="load()">
                     <a>
                         <i class="fa-solid fa-file-import"></i>
@@ -99,15 +104,15 @@
                         <span class="links_name">Save</span>
                     </a>
                 </li>
-                {% else %}
-                <li class="modal-popup" onclick="openForm()">
+                <!-- {% if session["user_id"] %} -->
+                <!-- {% else %} -->
+                <!-- <li class="modal-popup" onclick="openForm()">
                     <a>
-                    <!-- <a href="#myModal" class="trigger-btn" data-toggle="modal"> -->
                         <i class="fa-solid fa-user"></i>
                         <span class="links_name">Login</span>
                     </a>
-                </li>
-                {% endif %}
+                </li> -->
+                <!-- {% endif %} -->
             </ul>
         </div>
         </div>

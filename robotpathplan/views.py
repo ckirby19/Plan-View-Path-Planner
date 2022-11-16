@@ -1,11 +1,12 @@
 from robotpathplan import app
 from robotpathplan.helpers import apology, login_required
-
+from robotpathplan.pathfinder import PathFinder
 import os
 import sys
 import sqlite3
 import json
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
+# from flask_cors import CORS
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -118,9 +119,32 @@ def register():
     else:
         return render_template("register.html")
 
+@app.route("/simulate",methods=["POST"])
+def simulate():
+    data = json.loads(request.form['sim_data'])
+    obstacles = []
+    # print("HELLO",data)
+    for object in data['objects']:
+        if "name" in object:
+            if object["name"] == "start":
+                start = (object["left"],object["top"])
+            elif object["name"] == "goal":
+                goal = (object["left"],object["top"])
+        else:
+            obstacles.append(object)
+
+    canvasSize = json.loads(request.form['canvas_size'])
+    width = canvasSize[0]
+    height = canvasSize[1]
+    pf = PathFinder(start,goal,(width,height),obstacles)
+    orderOfVisit,finalPath = pf.findPath()
+    print("Order of visit", orderOfVisit)
+    print("Final Path", finalPath)
+    return("/")
+
 # The below require user to be logged in
 
-@app.route("/")
+@app.route("/",methods=['GET','POST'])
 def index():
     data = {'dataURL':None}
     return render_template("index.html",data = data)
@@ -135,7 +159,7 @@ def save():
         try:
             cursor.execute("begin")
             cursor.execute("INSERT INTO drawings (user_id,drawing_name,meta_data,canvas_image) VALUES(?,?,?,?)",
-            (session["user_id"],filename,metaData,canvas_image))
+                (session["user_id"],filename,metaData,canvas_image))
             cursor.execute("commit")
         except db.Error:
             print("Failed SQL update/insert!")
