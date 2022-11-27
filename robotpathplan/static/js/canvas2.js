@@ -1,13 +1,25 @@
 // import {fabric} from "../../node_modules/fabric/dist/fabric.js";
 // import {fabric} from "C:\Users\conor\Documents\CodingProjects\Robotic Path Planner\node_modules\fabric\dist\fabric.js";
 // const fabric = require("fabric"); //Node.JS is a server-side technology, not a browser technology. Thus, Node-specific calls, like require(), do not work in the browser.
-var width  = Math.max(document.documentElement.clientWidth,  window.innerWidth  || 0);
-var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+// var width  = Math.max(document.documentElement.clientWidth,  window.innerWidth  || 0);
+// var height = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+var width = document.getElementById("canvas_container").clientWidth
+var height = document.getElementById("canvas_container").clientHeight
+var left = document.getElementById("canvas_container").offsetLeft
+console.log(height,width,left)
 
 var canvas = new fabric.Canvas("canvas1", {});
 
 canvas.setHeight( height )
 canvas.setWidth( width )
+
+var genericObj = new fabric.Rect({
+    originX: "center",
+    originY: "center",
+    fill: 'red',
+    width: 2,
+    height: 2,
+})
 
 //Start by adding goal and start objects
 var startObj = new fabric.Rect({
@@ -30,6 +42,8 @@ var goalObj = new fabric.Rect({
     width: 20,
     height: 20,
 })
+startObj.hasControls = false
+goalObj.hasControls = false
 canvas.add(startObj);
 canvas.add(goalObj);
 
@@ -101,8 +115,9 @@ function line(){
     });
 
     canvas.on('mouse:up', function (e){
-         hold = false;
-         thisLine.setCoords();
+        console.log("THISLINE:",thisLine.getCoords(false))
+        hold = false;
+        thisLine.setCoords();
     });
 
     canvas.selection = false;
@@ -110,16 +125,115 @@ function line(){
     objectSetSelect('added-line',false)
 }
 
+// Reset tool
+function reset(){
+    canvas.clear()
+    canvas.add(startObj)
+    canvas.add(goalObj)
+}
+
 // Simulate tool
 
 function simulate(){
-    var data = JSON.stringify(canvas);
+    console.log("SIMULATE")
+    var data = JSON.stringify(canvas)
     var canvasSize = JSON.stringify([width,height])
-    // var height = JSON.stringify(height);
-    // var width = JSON.stringify(width);
-    $.post("/simulate", {sim_data: data, canvas_size: canvasSize});
-    console.log("Simulated data",data,height,width);
+    $.ajax({
+        type:"POST",
+        url: "/simulate",
+        data:{
+            sim_data: data, 
+            canvas_size: canvasSize
+        },
+        success: function(response){
+            displayData(response)
+        }
+
+    })
+    
+    // $.post("/simulate", {sim_data: data, canvas_size: canvasSize},displayData(response))
+
+    // Send the scale information too from pathfinder so we can set width and height of the square.
+    // Must keep reference to old square and current
+
+    // wait for data to come back and upon return if data, animate each in order of visit from nothing to colour 1
+    //  then change each of those to colour 2. Once we reach the goal, go back and animate from start to finish the 
+    // cubes that are in final path
+    var points = [(44, 36), (44, 37), (44, 38), (44, 39), (44, 40), (44, 41), (44, 42), (44, 43), (45, 44), (46, 45), (47, 46), (48, 47), (49, 48), (50, 48), (51, 48), (52, 48), (53, 48), (54, 48), (55, 48), (56, 48), (57, 48), (58, 48), (59, 48), (60, 48), (61, 48), (62, 48), (63, 48), (64, 48), (65, 48), (66, 48), (67, 48), (68, 48), (69, 48), (70, 48), (71, 48), (72, 48), (73, 48), (74, 48), (75, 48), (76, 48), (77, 47), (78, 46), (79, 45), (80, 44), (81, 43), (82, 42), (83, 41), (84, 40), (85, 39), (86, 38), (87, 37), (88, 36)];
+    
+
 }
+
+function displayData(response){
+    var allPaths = response["orderOfVisit"];
+    var finalPath = response["finalPath"];
+    var scale = response["scale"]
+    var objs = [];
+    var first = true;
+
+    for (let i=0;i<allPaths.length;i++){
+        //How to animate this and slow it down
+        point = allPaths[i];
+        obj = new fabric.Rect({
+            originX: "center",
+            originY: "center",
+            fill: 'blue',
+            width: scale,
+            height: scale,
+            left: point[0]*scale,
+            top: point[1]*scale 
+        })
+        canvas.add(obj);
+        objs.push(obj);
+        if (!first){
+            objs[i-1].fill = 'grey';
+        }
+        first = false
+        startObj.bringToFront()
+        goalObj.bringToFront()
+        canvas.requestRenderAll();
+    }
+    console.log("DISPLAY", finalPath,scale);
+    finalPath.forEach(point => {
+        obj = new fabric.Rect({
+            originX: "center",
+            originY: "center",
+            fill: 'yellow',
+            width: scale,
+            height: scale,
+            left: point[0]*scale,
+            top: point[1]*scale 
+        })
+        canvas.add(obj);
+        startObj.bringToFront()
+        goalObj.bringToFront()
+        canvas.requestRenderAll();
+    });
+
+}
+
+// Load tool
+
+function load(){
+    fabric.svg
+    fabric.loadSVGFromURL("image.svg",function(objects,options)
+    {
+      var loadedObjects = new fabric.Group(group);
+      loadedObjects.set({
+        left: 0,
+        top: 0,
+        width:100,
+        height:100
+      });
+      canvas.add(loadedObjects);
+      canvas.renderAll();
+    },
+    function(item, object) {
+      object.set('id', item.getAttribute('id'));
+      group.push(object);
+    });
+}
+
 
 // Save tool
 

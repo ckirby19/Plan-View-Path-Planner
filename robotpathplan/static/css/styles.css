@@ -87,11 +87,10 @@ body{
 /* Main content */
 
 .canvas_container{
-    position: absolute;
-    width: 100%;
+    position: relative;
     height: 100vh;
-    top: 0;
     left: var(--sidenav-width);
+    width: 100%;
     background: var(--main-bg-color);
 }
 

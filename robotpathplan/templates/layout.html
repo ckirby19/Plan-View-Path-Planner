@@ -78,10 +78,10 @@
                         <span class="links_name">Rectangle</span>
                     </a>
                 </li>
-                <li onclick="erase()">
+                <li onclick="reset()">
                     <a >
                         <i class="fa-solid fa-eraser"></i>
-                        <span class="links_name">Eraser</span>
+                        <span class="links_name">Reset</span>
                     </a>
                 </li>
                 <li onclick="simulate()">
@@ -117,7 +117,7 @@
         </div>
         </div>
         <!-- Now fill the rest of main with this -->
-        <div class="canvas_container">
+        <div class="canvas_container" id="canvas_container">
             <canvas onload="move()" id="canvas1"></canvas>
         </div>
         

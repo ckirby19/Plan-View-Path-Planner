@@ -123,7 +123,6 @@ def register():
 def simulate():
     data = json.loads(request.form['sim_data'])
     obstacles = []
-    # print("HELLO",data)
     for object in data['objects']:
         if "name" in object:
             if object["name"] == "start":
@@ -138,9 +137,9 @@ def simulate():
     height = canvasSize[1]
     pf = PathFinder(start,goal,(width,height),obstacles)
     orderOfVisit,finalPath = pf.findPath()
-    print("Order of visit", orderOfVisit)
+    # print("Order of visit", orderOfVisit)
     print("Final Path", finalPath)
-    return("/")
+    return jsonify({"orderOfVisit":orderOfVisit,"finalPath":finalPath,"scale":pf.res})
 
 # The below require user to be logged in
 
