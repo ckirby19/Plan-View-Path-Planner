@@ -47,6 +47,9 @@ goalObj.hasControls = false
 canvas.add(startObj);
 canvas.add(goalObj);
 
+console.log("Start obj at: x: " + startObj.left + " y: " + startObj.top)
+console.log("Goal obj at: x: " + goalObj.left + " y: " + goalObj.top)
+
 canvas.toObject = (function(toObject) {
     return function() {
       return fabric.util.object.extend(toObject.call(this), 
@@ -70,9 +73,19 @@ goalObj.toObject = (function(toObject) {
 
 var hold = false;
 
+// Check coordinates tool
+
+function checkCoords(){
+    canvas.on('mouse:down', function (e){
+        var pointer = canvas.getPointer(e.e);
+        console.log("Clicked on - x: " + pointer.x + " y: " + pointer.y);
+    })
+}
+
 // Move tool
 
 canvas.selection = false;
+
 function move(){
     canvas.selection = true;
     canvas.hoverCursor = 'move';
@@ -93,7 +106,7 @@ function line(){
         thisLine = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
             id: 'added-line',
             stroke: 'black',
-            strokeWidth: 3,
+            strokeWidth: 10,
             selectable: false,
             originX: "center",
             originY: "center",
@@ -115,7 +128,8 @@ function line(){
     });
 
     canvas.on('mouse:up', function (e){
-        console.log("THISLINE:",thisLine.getCoords(false))
+        console.log("Added line",thisLine)
+        console.log("Line coordinates:",thisLine.getCoords(false))
         hold = false;
         thisLine.setCoords();
     });
@@ -137,7 +151,7 @@ function reset(){
 function simulate(){
     console.log("SIMULATE")
     var data = JSON.stringify(canvas)
-    var canvasSize = JSON.stringify([width,height])
+    var canvasSize = JSON.stringify([width-left,height])
     $.ajax({
         type:"POST",
         url: "/simulate",
@@ -159,7 +173,7 @@ function simulate(){
     // wait for data to come back and upon return if data, animate each in order of visit from nothing to colour 1
     //  then change each of those to colour 2. Once we reach the goal, go back and animate from start to finish the 
     // cubes that are in final path
-    var points = [(44, 36), (44, 37), (44, 38), (44, 39), (44, 40), (44, 41), (44, 42), (44, 43), (45, 44), (46, 45), (47, 46), (48, 47), (49, 48), (50, 48), (51, 48), (52, 48), (53, 48), (54, 48), (55, 48), (56, 48), (57, 48), (58, 48), (59, 48), (60, 48), (61, 48), (62, 48), (63, 48), (64, 48), (65, 48), (66, 48), (67, 48), (68, 48), (69, 48), (70, 48), (71, 48), (72, 48), (73, 48), (74, 48), (75, 48), (76, 48), (77, 47), (78, 46), (79, 45), (80, 44), (81, 43), (82, 42), (83, 41), (84, 40), (85, 39), (86, 38), (87, 37), (88, 36)];
+    // var points = [(44, 36), (44, 37), (44, 38), (44, 39), (44, 40), (44, 41), (44, 42), (44, 43), (45, 44), (46, 45), (47, 46), (48, 47), (49, 48), (50, 48), (51, 48), (52, 48), (53, 48), (54, 48), (55, 48), (56, 48), (57, 48), (58, 48), (59, 48), (60, 48), (61, 48), (62, 48), (63, 48), (64, 48), (65, 48), (66, 48), (67, 48), (68, 48), (69, 48), (70, 48), (71, 48), (72, 48), (73, 48), (74, 48), (75, 48), (76, 48), (77, 47), (78, 46), (79, 45), (80, 44), (81, 43), (82, 42), (83, 41), (84, 40), (85, 39), (86, 38), (87, 37), (88, 36)];
     
 
 }
@@ -171,29 +185,30 @@ function displayData(response){
     var objs = [];
     var first = true;
 
-    for (let i=0;i<allPaths.length;i++){
-        //How to animate this and slow it down
-        point = allPaths[i];
-        obj = new fabric.Rect({
-            originX: "center",
-            originY: "center",
-            fill: 'blue',
-            width: scale,
-            height: scale,
-            left: point[0]*scale,
-            top: point[1]*scale 
-        })
-        canvas.add(obj);
-        objs.push(obj);
-        if (!first){
-            objs[i-1].fill = 'grey';
-        }
-        first = false
-        startObj.bringToFront()
-        goalObj.bringToFront()
-        canvas.requestRenderAll();
-    }
-    console.log("DISPLAY", finalPath,scale);
+    // for (let i=0;i<allPaths.length;i++){
+    //     //How to animate this and slow it down
+    //     point = allPaths[i];
+    //     obj = new fabric.Rect({
+    //         originX: "center",
+    //         originY: "center",
+    //         fill: 'blue',
+    //         width: scale,
+    //         height: scale,
+    //         left: point[0]*scale,
+    //         top: point[1]*scale,
+    //         hasControls: false
+    //     })
+    //     canvas.add(obj);
+    //     objs.push(obj);
+    //     if (!first){
+    //         objs[i-1].fill = 'grey';
+    //     }
+    //     first = false
+    // }
+    startObj.bringToFront()
+    goalObj.bringToFront()
+    canvas.requestRenderAll();
+    // console.log("DISPLAY", finalPath,scale);
     finalPath.forEach(point => {
         obj = new fabric.Rect({
             originX: "center",
@@ -202,7 +217,8 @@ function displayData(response){
             width: scale,
             height: scale,
             left: point[0]*scale,
-            top: point[1]*scale 
+            top: point[1]*scale,
+            hasControls: false
         })
         canvas.add(obj);
         startObj.bringToFront()
@@ -215,7 +231,7 @@ function displayData(response){
 // Load tool
 
 function load(){
-    fabric.svg
+    // fabric.svg
     fabric.loadSVGFromURL("image.svg",function(objects,options)
     {
       var loadedObjects = new fabric.Group(group);

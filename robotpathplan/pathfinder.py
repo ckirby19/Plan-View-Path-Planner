@@ -12,12 +12,14 @@ class PathFinder:
         resolution: Grid Resolution pixels per length 
         obstacles: list of obstacles
         """
+        # TODO: Get rid of this discrete version, stick with the continuous problem, and for each line within some 
+        # box around 
         print("Started Path Planning...")
         self.startX,self.startY = start
         self.goalX,self.goalY = goal
         self.width,self.height = canvas
         self.obs = obstacles
-        self.res = 10 #higher number, lower resolution (less cells in grid)
+        self.res = 1 #higher number, lower resolution (less cells in grid)
 
         self.gridX = round(self.width/self.res)
         self.gridY = round(self.height/self.res)
@@ -27,62 +29,107 @@ class PathFinder:
         self.motion = [[1, 0, 1],
                   [0, 1, 1],
                   [-1, 0, 1],
-                  [0, -1, 1],
-                  [-1, -1, round(math.sqrt(2),3)],
-                  [-1, 1, round(math.sqrt(2),3)],
-                  [1, -1, round(math.sqrt(2),3)],
-                  [1, 1, round(math.sqrt(2),3)]]
+                  [0, -1, 1]]
+                #   [-1, -1, round(math.sqrt(2),3)],
+                #   [-1, 1, round(math.sqrt(2),3)],
+                #   [1, -1, round(math.sqrt(2),3)],
+                #   [1, 1, round(math.sqrt(2),3)]]
 
         # obstacle map generation
         self.obstacleMap = [[0 for i in range(self.gridX)] for j in range(self.gridY)]
         self.createObstacleMap()
-        # print(self.obstacleMap)
 
     def createObstacleMap(self):
         for obstacle in self.obs:
             if obstacle["type"] == "line":
                 self.obstacleFromLine(obstacle)
-                # gridPoints = self.obstacleFromLine(obstacle)
-                # for point in gridPoints:
-                #     obstacleMap[point[1]][point[0]] = 1
+    
+    def convertPos(self,x,y):
+        # Convert from pixel space to grid space
+
+        # Ratio of self.gridX/self.width = indX/x
+        indX = round(x*self.gridX/self.width)
+        indY = round(y*self.gridY/self.height)
+        return (indX,indY)
+
+    def convertLength(self,pixelLength):
+        # Convert length from pixel space to grid space
+        return math.ceil(pixelLength/self.res)
 
     def obstacleFromLine(self,line):
-        # Given end points of line
-        lineX1 = line["left"] + line["x1"]
-        lineY1 = line["top"] + line["y1"]
-        lineX2 = line["left"] + line["x2"]
-        lineY2 = line["top"] + line["y2"]
-        minX = min(lineX1,lineX2)
-        maxX = max(lineX1,lineX2)
-        minY = min(lineY1,lineY2)
-        maxY = max(lineY1,lineY2)
-        lineGridMinX,lineGridMinY = self.convertPos(minX,minY)
-        lineGridMaxX,lineGridMaxY = self.convertPos(maxX,maxY)
-
-        if (lineGridMaxX == lineGridMinX):
-            for y in range(lineGridMinY,lineGridMaxY):
-                self.obstacleMap[y][lineGridMaxX-1] = 1
-                self.obstacleMap[y][lineGridMaxX] = 1
-                self.obstacleMap[y][lineGridMaxX+1] = 1
-        elif (lineGridMaxY == lineGridMinY):
-            for x in range(lineGridMinX,lineGridMaxX):
-                self.obstacleMap[lineGridMaxY-1][x] = 1
-                self.obstacleMap[lineGridMaxY][x] = 1
-                self.obstacleMap[lineGridMaxY+1][x] = 1
+        # Given end points of line, create a bounding box around the line, accounting for the rotation of each element
+        #y1 and y2 tell us orientation of line. If y1 > y2, then line is rotated s.t left side is lower. If y2 > y1, right side if lower
+        x1, y1 = line["left"] + line["x1"],line["top"] + line["y1"] 
+        x2, y2 = line["left"] + line["x2"],line["top"] + line["y2"]
+        print("Line details",x1,y1,x2,y2)
+        # x1,y1 = self.convertPos(x1,y1)
+        # x2,y2 = self.convertPos(x1,y1)
+        x1,y1 = round(x1/self.res), round(y1/self.res)
+        x2,y2 = round(x2/self.res), round(y2/self.res)
+        
+        print("After conversion",x1,y1,x2,y2)
+        gradient = (y2 - y1)/(x2 - x1)
+        intersept = y1 - gradient*x1
+        perpGradient = -1/gradient
+        if x1 == x2:
+            #Vertical line
+            pass
+        elif y1 == y2:
+            #Horizontal line
+            pass
         else:
-            print(lineGridMinX,lineGridMinY,lineGridMaxX,lineGridMaxY)
-            numPixels = min(lineGridMaxX-lineGridMinX,lineGridMaxY-lineGridMinY)
-            print("Num pixels",numPixels)
-            x = lineGridMinX
-            y = lineGridMinY
-            for i in range(0,numPixels):
-                self.obstacleMap[y-1][x] = 1
-                self.obstacleMap[y][x-1] = 1
-                self.obstacleMap[y][x] = 1
-                self.obstacleMap[y+1][x] = 1
-                self.obstacleMap[y][x+1] = 1
-                x+=1
-                y+=1
+            minX = min(x1,x2)
+            maxX = max(x1,x2)
+            for middleX in range(minX,maxX):
+                middleY = round(gradient*middleX + intersept)
+                print("X Y values:",middleX,middleY)
+                for w in range(0,int(line["strokeWidth"])//2):
+                    try:
+                        print("width",round(middleX + w),round(middleY + w*perpGradient))
+                        self.obstacleMap[round(middleY + w*perpGradient)][round(middleX + w)] = 1
+                        self.obstacleMap[round(middleY - w*perpGradient)][round(middleX - w)] = 1
+                    except:
+                        continue
+            
+        
+        
+        
+        
+        # lineX1 = line["left"] + line["x1"]
+        # lineY1 = line["top"] + line["y1"]
+        # lineX2 = line["left"] + line["x2"]
+        # lineY2 = line["top"] + line["y2"]
+        # minX = min(lineX1,lineX2)
+        # maxX = max(lineX1,lineX2)
+        # minY = min(lineY1,lineY2)
+        # maxY = max(lineY1,lineY2)
+        # lineGridMinX,lineGridMinY = self.convertPos(minX,minY)
+        # lineGridMaxX,lineGridMaxY = self.convertPos(maxX,maxY)
+
+        # if (lineGridMaxX == lineGridMinX):
+        #     for y in range(lineGridMinY,lineGridMaxY):
+        #         self.obstacleMap[y][lineGridMaxX-1] = 1
+        #         self.obstacleMap[y][lineGridMaxX] = 1
+        #         self.obstacleMap[y][lineGridMaxX+1] = 1
+        # elif (lineGridMaxY == lineGridMinY):
+        #     for x in range(lineGridMinX,lineGridMaxX):
+        #         self.obstacleMap[lineGridMaxY-1][x] = 1
+        #         self.obstacleMap[lineGridMaxY][x] = 1
+        #         self.obstacleMap[lineGridMaxY+1][x] = 1
+        # else:
+        #     # print(lineGridMinX,lineGridMinY,lineGridMaxX,lineGridMaxY)
+        #     numPixels = min(lineGridMaxX-lineGridMinX,lineGridMaxY-lineGridMinY)
+        #     # print("Num pixels",numPixels)
+        #     x = lineGridMinX
+        #     y = lineGridMinY
+        #     for i in range(0,numPixels):
+        #         self.obstacleMap[y-1][x] = 1
+        #         self.obstacleMap[y][x-1] = 1
+        #         self.obstacleMap[y][x] = 1
+        #         self.obstacleMap[y+1][x] = 1
+        #         self.obstacleMap[y][x+1] = 1
+        #         x+=1
+        #         y+=1
             # gradient = (lineGridMaxY - lineGridMinY)/(lineGridMaxX - lineGridMinX)
             
             # intercept = (lineGridMinY - gradient*lineGridMinX)
@@ -122,18 +169,6 @@ class PathFinder:
                 #     gridPoints.append((round(x+thX),round(y+thY)))
                 #     if (thX,thY) != (0,0):
                 #         gridPoints.append((round(x-thX),round(y-thY)))
-
-    def convertPos(self,x,y):
-        # Convert from pixel space to grid space
-
-        # Ratio of self.goalX/self.width = indX/x
-        indX = round(x*self.gridX/self.width)
-        indY = round(y*self.gridY/self.height)
-        return (indX,indY)
-
-    def convertLength(self,pixelLength):
-        # Convert length from pixel space to grid space
-        return math.ceil(pixelLength/self.res)
 
     def binaryInsert(self,element,stack,left,right):
         """Binary Insertion of element into stack, descending, based on distance from (distance,current,prev)
@@ -176,7 +211,6 @@ class PathFinder:
         stack = [(0,start)] # (total distance,cur pos)
         print("Start",start,"Goal",goal)
         while not foundGoal and stack:
-            # print(stack)
             curDistance,curCell = stack.pop()
             for move in self.motion:
                 nextX = curCell[0] + move[0]
@@ -188,15 +222,14 @@ class PathFinder:
                         prevNodes[goal] = curCell
                         foundGoal = True
                         break
-                    if visited[nextCell[1]][nextCell[0]] == 0 and self.obstacleMap[nextCell[1]][nextCell[0]] == 0:
-                        #insert into stack, keeping stack ordered in terms of distance 
-                        # print("Next Cell: ", nextCell,"GridX",self.gridX,"GridY",self.gridY,"Check visited: ",visited[nextCell[0]])
-                        
-                        visited[nextCell[1]][nextCell[0]] = 1
-                        orderOfVisit.append(nextCell)
-                        prevNodes[nextCell] = curCell
-                        toInsert = (curDistance+move[2],nextCell)
-                        stack = self.binaryInsert(toInsert,stack,0,len(stack))
+                    if visited[nextCell[1]][nextCell[0]] == 0:
+                        #We need to check we are not jumping to a diagonal 
+                        if self.obstacleMap[nextCell[1]][nextCell[0]] == 0:
+                            visited[nextCell[1]][nextCell[0]] = 1
+                            orderOfVisit.append(nextCell)
+                            prevNodes[nextCell] = curCell
+                            toInsert = (curDistance+move[2],nextCell)
+                            stack = self.binaryInsert(toInsert,stack,0,len(stack))
                         
         finalPath = []
         if foundGoal:
@@ -209,16 +242,6 @@ class PathFinder:
             finalPath.reverse()
         print("Path found!")
         return orderOfVisit,finalPath
-                        
-
-
-# if __name__ == "__main__":
-#     insertion = (1,(2,0))
-#     stack = [(3,(1,2)), (2,(1,1)), (1,(1,0))]
-#     stack = PathFinder.binaryInsert(insertion,stack,0,len(stack))
-#     print(stack)
-#     stack = PathFinder.binaryInsert(insertion,stack,0,len(stack))
-#     print(stack)
 
         
     
