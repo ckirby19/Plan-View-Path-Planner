@@ -1,5 +1,5 @@
 {
-  "name": "robotic-path-planner",
+  "name": "plan-view-path-planner",
   "version": "1.0.0",
   "description": "An environment for experimenting with different path planning algorithms in a 2D environment",
   "private": true,
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ckirby19/Robotic-Path-Planner.git"
+    "url": "git+https://github.com/ckirby19/Plan-View-Path-Planner.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ckirby19/Robotic-Path-Planner/issues"
+    "url": "https://github.com/ckirby19/Plan-View-Path-Planner/issues"
   },
-  "homepage": "https://github.com/ckirby19/Robotic-Path-Planner#readme",
+  "homepage": "https://github.com/ckirby19/Plan-View-Path-Planner#readme",
   "dependencies": {
     "fabric": "^5.2.4"
   },

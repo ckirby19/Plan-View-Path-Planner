@@ -1,1 +1,1 @@
-To run, use flask --app robotpathplan run (--debug) from route directory
+To run, use flask --app planviewpathplan run (--debug) from route directory

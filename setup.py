@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='robotpathplan',
-    packages=['robotpathplan'],
+    name='planviewpathplan',
+    packages=['planviewpathplan'],
     include_package_data=True,
 )
