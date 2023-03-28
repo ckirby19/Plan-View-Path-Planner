@@ -1,6 +1,8 @@
 setup.py
-robotpathplan/app.py
+robotpathplan/__init__.py
 robotpathplan/helpers.py
+robotpathplan/pathfinder.py
+robotpathplan/views.py
 robotpathplan.egg-info/PKG-INFO
 robotpathplan.egg-info/SOURCES.txt
 robotpathplan.egg-info/dependency_links.txt

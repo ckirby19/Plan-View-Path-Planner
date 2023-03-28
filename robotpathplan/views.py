@@ -14,7 +14,7 @@ from datetime import datetime
 
 Session(app)
 
-db = sqlite3.connect("robotpathplan/users.db",check_same_thread=False)
+db = sqlite3.connect("robotpathplan/users.db")
 db.row_factory = sqlite3.Row
 cursor = db.cursor()
 
@@ -138,7 +138,7 @@ def simulate():
     pf = PathFinder(start,goal,(width,height),obstacles)
     orderOfVisit,finalPath = pf.findPath()
     # print("Order of visit", orderOfVisit)
-    print("Final Path", finalPath)
+    # print("Final Path", finalPath)
     return jsonify({"orderOfVisit":orderOfVisit,"finalPath":finalPath,"scale":pf.res})
 
 # The below require user to be logged in
