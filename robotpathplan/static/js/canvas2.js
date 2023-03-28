@@ -106,7 +106,7 @@ function line(){
         thisLine = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
             id: 'added-line',
             stroke: 'black',
-            strokeWidth: 10,
+            strokeWidth: 5,
             selectable: false,
             originX: "center",
             originY: "center",
@@ -205,7 +205,7 @@ function displayData(response){
     //     }
     //     first = false
     // }
-    startObj.bringToFront()
+    // startObj.bringToFront()
     goalObj.bringToFront()
     canvas.requestRenderAll();
     // console.log("DISPLAY", finalPath,scale);
