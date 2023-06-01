@@ -135,7 +135,7 @@ def simulate():
     canvasSize = json.loads(request.form['canvas_size'])
     width = canvasSize[0]
     height = canvasSize[1]
-    pf = PathFinder(start,goal,(width,height),obstacles)
+    pf = PathFinder(start,goal,canvasSize,obstacles)
     orderOfVisit,finalPath = pf.findPath()
     # print("Order of visit", orderOfVisit)
     # print("Final Path", finalPath)

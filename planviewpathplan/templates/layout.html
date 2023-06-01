@@ -60,12 +60,6 @@
                         <span class="links_name">Select</span>
                     </a>
                 </li>
-                <li onclick="pencil()">
-                    <a>
-                        <i class="fa-solid fa-pen"></i>
-                        <span class="links_name">Pen</span>
-                    </a>
-                </li>
                 <li onclick="line()">
                     <a>
                         <i class="fa-solid fa-bezier-curve"></i>
@@ -84,6 +78,18 @@
                         <span class="links_name">Reset</span>
                     </a>
                 </li>
+                <li onclick="undo()">
+                    <a >
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                        <span class="links_name">Undo</span>
+                    </a>
+                </li>
+                <li onclick="redo()">
+                    <a >
+                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                        <span class="links_name">Redo</span>
+                    </a>
+                </li>
                 <li onclick="simulate()">
                     <a>
                         <i class="fa-solid fa-robot"></i>
@@ -98,8 +104,9 @@
                 </li>
             </ul>
             <ul class="user_functions">
-                <li onclick="load()">
+                <li>
                     <a>
+                        <input onchange="load(event)" type="file" accept=".svg"/>
                         <i class="fa-solid fa-file-import"></i>
                         <span class="links_name">Load</span>
                     </a>

@@ -38,8 +38,13 @@ class PathFinder:
         # get the required coordinates for each line
         self.lineCoords = []
         for obstacle in self.obs:
+            print(obstacle["type"])
             if obstacle["type"] == "line":
                 self.createlineCoords(obstacle)
+            elif obstacle["type"] == "path":
+                # What to do if we have a path from an svg
+                pass
+                
             
     def createlineCoords(self,line):
         #First find the corners of the line
