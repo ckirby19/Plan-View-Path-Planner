@@ -14,13 +14,14 @@ body{
 
 .sidebar{
     position:fixed;
-    height:100%;
-    top:0;
-    left:0;
+    height:100vh;
     width: var(--sidenav-width);
     background-color: var(--other-bg-color);
     padding: 6px 14px;
-    transition: all 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Logo */

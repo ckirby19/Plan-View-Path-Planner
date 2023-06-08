@@ -11,6 +11,7 @@ class PathFinder:
         canvas: (X,Y) in pixels. Origin in top left, with +X right, +Y down
         resolution: Grid Resolution pixels per length 
         obstacles: list of obstacles
+        
         """
         # TODO: Get rid of this discrete version, stick with the continuous problem, and for each line within some 
         # box around 
@@ -43,7 +44,8 @@ class PathFinder:
                 self.createlineCoords(obstacle)
             elif obstacle["type"] == "path":
                 # What to do if we have a path from an svg
-                pass
+                for line in obstacle["path"]:
+                    print(line)
                 
             
     def createlineCoords(self,line):

@@ -52,7 +52,6 @@
                     <img src="../static/images/mylogo-centred.jpg" alt="A handshake between a human and robot hand, forming the shape of a heart"></img>
                 </div>
             </div>
-            
             <ul class="canvas_functions">
                 <li onclick="move()" class="active">
                     <a>
@@ -78,13 +77,13 @@
                         <span class="links_name">Reset</span>
                     </a>
                 </li>
-                <li onclick="undo()">
+                <li onclick="undo()" id="undoBtn">
                     <a >
                         <i class="fa-solid fa-arrow-rotate-left"></i>
                         <span class="links_name">Undo</span>
                     </a>
                 </li>
-                <li onclick="redo()">
+                <li onclick="redo()" id="redoBtn">
                     <a >
                         <i class="fa-solid fa-arrow-rotate-right"></i>
                         <span class="links_name">Redo</span>
@@ -96,10 +95,11 @@
                         <span class="links_name">Simulate</span>
                     </a>
                 </li>
-                <li onclick="checkCoords()">
+                <br>
+                <li onclick="save()">
                     <a>
-                        <i class="fa-solid fa-robot"></i>
-                        <span class="links_name">Check</span>
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span class="links_name">Save</span>
                     </a>
                 </li>
             </ul>
@@ -108,15 +108,12 @@
                     <a>
                         <input onchange="load(event)" type="file" accept=".svg"/>
                         <i class="fa-solid fa-file-import"></i>
-                        <span class="links_name">Load</span>
                     </a>
                 </li>
-                <li onclick="save()">
-                    <a>
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span class="links_name">Save</span>
-                    </a>
-                </li>
+                
+
+
+                
                 <!-- {% if session["user_id"] %} -->
                 <!-- {% else %} -->
                 <!-- <li class="modal-popup" onclick="openForm()">
@@ -166,15 +163,8 @@
                 </div>
             </div>
         </div>     
-        <!-- <script type="importmap">
-            {
-                "imports":{
-                    "fabric":"../../node_modules/fabric/dist/fabric.js"
-                }
-            }
-        </script> -->
         <script src = "../static/js/fabric.min.js"></script>
-        <script src = "../static/js/canvas2.js"></script>
+        <script src = "../static/js/canvas.js"></script>
         <script src = "../static/js/sidenav.js"></script>
     </body>
 
