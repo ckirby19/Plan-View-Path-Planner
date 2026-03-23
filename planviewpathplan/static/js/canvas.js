@@ -59,21 +59,21 @@ $(function() {
     // Edit objects generic functions
     canvas.toObject = (function(toObject) {
     return function() {
-        return fabric.util.object.extend(toObject.call(this), 
+        return Object.assign(toObject.call(this), 
         {height: this.height, width: this.width});
     };
     })(canvas.toObject);
 
     startObj.toObject = (function(toObject) {
     return function() {
-        return fabric.util.object.extend(toObject.call(this), 
+        return Object.assign(toObject.call(this), 
         {name: this.name});
     };
     })(startObj.toObject);
 
     goalObj.toObject = (function(toObject) {
     return function() {
-        return fabric.util.object.extend(toObject.call(this), 
+        return Object.assign(toObject.call(this), 
         {name: this.name});
     };
     })(goalObj.toObject);
@@ -331,50 +331,16 @@ function displayData(response){
 let inputImg;
 function load(e){
     var url = URL.createObjectURL(e.target.files[0]);
-    fabric.loadSVGFromURL(url,function(objects)
-    {
-        inputImg = fabric.util.groupSVGElements(objects)
+    fabric.loadSVGFromURL(url).then(function(result) {
+        var objects = result.objects;
+        inputImg = fabric.util.groupSVGElements(objects);
         inputImg.set({
             hasBorders:true,
             hasControls:true,
             selectable:true,
-        })
-        console.log("Here I am:",inputImg)
-        // inputImg = new fabric.Path(objects[0].d, {
-        //     fill: '#333',
-        //     opacity: 1,
-        //     hasBorders: true,
-        //     hasControls: true,
-        //     hasRotatingPoint: true,
-        //     selectable: true,
-        //     preserveObjectStacking: true,
-        //     objectCaching: false,
-        // });
+        });
+        console.log("Here I am:",inputImg);
         canvas.add(inputImg).renderAll();
-
-
-        // objects.forEach(function(svg){
-        //     svg.set({
-        //         left: 200,
-        //         top: 200,
-        //         originX: 'center',
-        //         originY: 'center'
-        //     });
-        //     svg.scaleToWidth(200);
-        //     svg.scaleToHeight(200);
-        //     canvas.add(svg).renderAll()
-        //     console.log(svg)
-        // });
-        
-    //   var loadedObjects = new fabric.Group(objects);
-    //   loadedObjects.set({
-    //     left: 0,
-    //     top: 0,
-    //     width:100,
-    //     height:100
-    //   });
-    //   canvas.add(loadedObjects);
-    //   canvas.renderAll();
     });
 }
 

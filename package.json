@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/ckirby19/Plan-View-Path-Planner#readme",
   "dependencies": {
-    "fabric": "^5.2.4"
+    "fabric": "^7.2.0"
   },
   "devDependencies": {
     "webpack": "^5.74.0"
